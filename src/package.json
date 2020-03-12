@@ -1,0 +1,20 @@
+{
+  "name": "ambulant_api",
+  "author": "Marcos Freitas",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.4.0"
+  },
+  "license": "ISC",
+  "description": ""
+}
