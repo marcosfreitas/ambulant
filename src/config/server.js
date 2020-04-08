@@ -4,19 +4,21 @@ module.exports = function(app) {
      * Preparing required modules
      */
     global.express = require('express');
-    //global.router = express.Router();
+    global.router = express.Router();
+    global.mongoose = require('mongoose');
 
     const dotenv = require('dotenv');
     dotenv.config();
 
     /**
-     * @todo implement validation layer
-     *
-        const { check, validationResult } = require('express-validator');
-    */
+     * validation layer
+     */
+    const { check, buildCheckFunction, validationResult } = require('express-validator');
+    checkBodyAndQuery = buildCheckFunction(['body', 'query']);
+    global.validationResult = validationResult;
+    global.check = check;
 
-    global.app = express();
-    app = global.app;
+    app = express();
 
     /**
      * Extras
@@ -27,27 +29,23 @@ module.exports = function(app) {
 
     app.use(express.json());
 
-    app.get('/', (req, res) => {
-        res.send('hello world');
-    });
-
     /**
      * @todo Routes
      */
-    /*const api = require('../app/routes/api');
+    const api = require('../app/routes/api');
 
-    app.use('/api', api);*/
+    app.use('/v1', api);
 
     /**
-     * @todo layer of capturing and monitoring
-     * this doesn't working
+     * @todo improve layer of capturing and monitoring
+     * this is working with error 500
      */
     app.use(function(err, req, res, next) {
         console.error(err.stack);
         res.status(500).send('Whoops! Something went wrong')
     });
 
-    app.listen(3000, function() {
-        console.log('server listening at port 3000');
+    app.listen(process.env.SERVER_PORT, function() {
+        console.log('server listening at port ' + process.env.SERVER_PORT);
     });
 };
