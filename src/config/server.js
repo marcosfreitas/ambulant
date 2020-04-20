@@ -1,14 +1,19 @@
-module.exports = function(app) {
+module.exports = async function(app) {
 
     /**
      * Preparing required modules
      */
     global.express = require('express');
     global.router = express.Router();
-    global.mongoose = require('mongoose');
 
     const dotenv = require('dotenv');
     dotenv.config();
+
+    /**
+     * APP DEBUG
+     * define a global CONST checked in services classes
+     */
+    const APP_DEBUG = process.env.APP_DEBUG;
 
     /**
      * validation layer
@@ -17,6 +22,35 @@ module.exports = function(app) {
     checkBodyAndQuery = buildCheckFunction(['body', 'query']);
     global.validationResult = validationResult;
     global.check = check;
+
+    /**
+     * Database
+     */
+    const DB_HOST = process.env.MONGO_SERVER;
+    const DB_NAME = process.env.MONGO_DATABASE;
+    const DB_USER = process.env.MONGO_USER;
+    const DB_USER_PWD = process.env.MONGO_PASSWORD;
+
+    global.mongoose = require('mongoose');
+
+    let mongo_options = {
+        useNewUrlParser : true,
+        useUnifiedTopology : true,
+        ssl: true,
+        replicaSet: 'linkou-shard-0',
+        authSource: 'admin',
+        retryWrites: true,
+        w: 'majority'
+    };
+
+    let mongo_uri = `mongodb://${DB_USER}:${DB_USER_PWD}@${DB_HOST}/${DB_NAME}`;
+
+    await mongoose.connect(mongo_uri, mongo_options).then(()=> {
+        console.log('conexão com o banco iniciada');
+    }).catch((e)=>{
+        console.log(e);
+        console.log('falhar ao conectar com o banco');
+    });
 
     app = express();
 
@@ -30,7 +64,7 @@ module.exports = function(app) {
     app.use(express.json());
 
     /**
-     * @todo Routes
+     * Routes
      */
     const api = require('../app/routes/api');
 
