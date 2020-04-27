@@ -16,9 +16,6 @@
        this.model = new PersonModel();
     }
 
-    /*save = async function(req, res){
-        return await this.store(req, res);
-    }*/
  }
 
  module.exports = PersonService;

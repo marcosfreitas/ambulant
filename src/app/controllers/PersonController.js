@@ -5,6 +5,7 @@ let PersonService = require('../services/PersonService');
 
 
 class PersonController {
+
     constructor () {
         this.service = new PersonService();
     }
